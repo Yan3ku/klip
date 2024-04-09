@@ -87,4 +87,11 @@ EOF
 parse "$input"
 rmdups "$records"
 sortbytitle "$records"
-show "$records" | xclip -sel clip
+echo "$records" | xclip -sel clip
+exit
+while read -r line; do
+    echo "$line" | xclip -sel clip
+    sleep 1
+done<<EOF
+$records
+EOF
