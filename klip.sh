@@ -1,7 +1,6 @@
 #!/bin/sh
 # AUTHOR: Jan Wiśniewki
-# LICENSED: WTFPL2 https://choosealicense.com/licenses/wtfpl/
-# CREATED ON: $ git log --reverse
+# LICENSED: 何んでもいい
 # COMMENTARY:
 #
 # This extracts the clippings data from kindle and creates anki cards
@@ -44,6 +43,7 @@ if ! mkdir -p "/mnt/$disk" ; then
     zenity --error --text "Can't create mounting point for kindle"
     exit 1
 fi
+# mount device to WSL
 sudo -S -s <<EOF
 sudo -S umount "/mnt/$disk" &>/dev/null
 sudo -S mount -t drvfs "$disk": "/mnt/$disk"
@@ -59,14 +59,18 @@ if ! [ -f "$input" ]; then
 fi
 dos2unix -q "$input"
 
+# this appends new record and works around $() striping newlines
+# the record schema uses \t as separator for each field and \n as new fields
+# I don't use array because POSIX don't define them.
 mkrecord() {
-    # work around $() striping newlines
     records=$(printf "%s%s\t%s\t%s\t%s\t%s\nx" "$records" "$@")
-    records=${records%x}
+    records=${records%x}	# strip x which circumvents newline striping
 }
 
 parse() { # parse clippings into $records
     records=""
+    # read each line into separate variable (for each record)
+    # and put complete data into $records
     while read -r title; read -r loc; read -r _; read -r note; read -r sep; do
 	if test "$sep" != "=========="; then
 	    echo "unexpected record separator '$sep'" 1>&2
@@ -75,7 +79,7 @@ parse() { # parse clippings into $records
 	test -z "$note" && continue
 
 	# shellcheck disable=SC2086
-	set -- $loc
+	set -- $loc		# set splits on spaces, often better to use than `cut'
 	p=$6 l=$9
 	shift 13
 	date=$*
@@ -84,6 +88,8 @@ parse() { # parse clippings into $records
     records=$(printf %s "$records")
 }
 
+# The rest of the code is using the IFS to set the field separator for read
+# and then iterates in loop over each record (\n) and processing ironna na koto ()
 rmdups() { # remove duplicates
     records=""
     lastnote=""
@@ -125,9 +131,12 @@ parse "$input"
 rmdups "$records"
 sortbytitle "$records"
 zenity --info --title "Extraction complete" --text "Prepare texthooker and clipboard inserter"
+# the texthooker im using can't handle new lines so I print it with delay
+# but it doesn't matter because it takes time to create the flashcards anyway
 while read -r line; do
     echo "$line" | xclip -sel clip
     sleep 1
 done<<EOF
 $records
 EOF
+echo "おまたせて！";
