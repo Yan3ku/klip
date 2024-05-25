@@ -1,0 +1,63 @@
+.TH KLIP 1 "May 2024" "Version 0.1"
+.SH NAME
+klip.sh \- extract clippings data from Kindle and create Anki flashcards
+.SH SYNOPSIS
+.B klip.sh
+[\fB-h\fP] [\fB-v\fP]
+.SH DESCRIPTION
+This script extracts highlighted text from Kindle's "My Clippings.txt" file, processes the data, and prepares it for insertion into Anki via a clipboard inserter extension.
+.SH OPTIONS
+.TP
+\fB-h\fP
+Display the help message and exit.
+.TP
+\fB-v\fP
+Display the version information and exit.
+.SH EXAMPLES
+Here is how a Kindle clipping record looks like:
+.nf
+==========
+また、同じ夢を見ていた (住野よる)
+- Your Highlight on page 3 | Location 14-14 | Added on Sunday, March 17, 2024 8:11:45 PM
+
+向き合って
+==========
+.fi
+.SH USAGE
+.IP \[bu] 2
+Highlight text on your Kindle device.
+.IP \[bu] 2
+Connect the Kindle to your computer.
+.IP \[bu] 2
+Run the script.
+.IP \[bu] 2
+Follow the prompts to mount the Kindle disk and copy the clippings file.
+.IP \[bu] 2
+Wait for the processing to complete.
+.IP \[bu] 2
+Use Texthooker and the clipboard inserter to copy records into Anki.
+
+.SH EXIT STATUS
+The script exits with status 0 on success, and >0 if an error occurs.
+
+.SH AUTHOR
+Jan Wiśniewki
+.SH REPORTING BUGS
+github.com
+.SH LICENSE
+何んでもいい
+
+.SH REQUIRED TOOLS
+.IP \[bu] 2
+Yomitan: https://github.com/themoeway/yomitan
+.IP \[bu] 2
+Clipboard Inserter: https://github.com/themoeway/yomitan
+.IP \[bu] 2
+Texthooker: https://anacreondjt.gitlab.io/texthooker.html
+.IP \[bu] 2
+Anki: https://apps.ankiweb.net/
+
+.SH COPYRIGHT
+Licensed under 何んでもいい
+
+klip.sh version 0.1
